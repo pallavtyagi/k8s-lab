@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: livy
+  labels:
+    app: livy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: livy
+  template:
+    metadata:
+      labels:
+        app: livy
+    spec:
+      serviceAccountName: spark
+      containers:
+      - image: rootstrap/apache-livy:latest
+        name: livy
+        env:
+        - name: SPARK_MASTER_ENDPOINT
+          value: "CLUSTER_URL"
+        - name: SPARK_MASTER_PORT
+          value: "443"
+        - name: DEPLOY_MODE
+          value: "cluster"
+        - name: LIVY_VERSION
+          value: "0.7.1-incubating"
+        - name: SPARK_HOME
+          value: "/opt/spark-3.1.2-bin-hadoop3.2"
+        ports:
+        - containerPort: 8998
+
